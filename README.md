@@ -1,48 +1,49 @@
 # markdown-to-org
 
-这是一个 Emacs 包，用于将 Markdown 文本转换为 Org-mode 格式。
+This is an Emacs package for converting Markdown text to Org-mode format.
 
-## 安装
+## Installation
 
-### 使用 MELPA
+### Using MELPA
 
-如果你使用 MELPA，可以通过以下命令安装：
+If you use MELPA, you can install it with the following command:
 
 ```elisp
 M-x package-install RET markdown-to-org RET
 ```
 
-### 手动安装
+### Manual Installation
 
-1. 克隆此仓库
-2. 将文件添加到你的 `load-path`
-3. 在 init.el 中添加：
+1. Clone this repository
+2. Add the files to your `load-path`
+3. Add the following to your init.el:
 ```elisp
 (require 'markdown-to-org)
 ```
 
-## 使用方法
+## Usage
 
-1. 在 Emacs 中打开一个包含 Markdown 文本的缓冲区
-2. 选择要转换的文本区域
-3. 运行 `M-x process-region-with-python-preset`
-4. 从菜单中选择 "md2org"
-5. 按照提示输入缩进级别和起始标题级别
-6. 转换后的文本将显示在新的缓冲区中
+1. Open a buffer containing Markdown text in Emacs
+2. Select the text region you want to convert
+3. Run `M-x process-region-with-python-preset`
+4. Select "md2org" from the menu
+5. Follow the prompts to enter the indent level and starting heading level
+6. The converted text will be displayed in a new buffer
 
-## 功能
+## Features
 
-- 将 Markdown 转换为 Org-mode 格式
-- 支持自定义缩进级别
-- 支持自定义起始标题级别
-- 提供其他文本处理功能（如大小写转换、单词计数等）
+- Convert Markdown to Org-mode format
+- Support custom indent levels
+- Support custom starting heading levels
+- Provide additional text processing features (such as case conversion, word count, etc.)
 
-## 依赖
+## Dependencies
 
-- Emacs 24.1 或更高版本
-- Org-mode 9.0 或更高版本
-- ob-python 0.1 或更高版本
+- Emacs 24.1 or higher
+- Org-mode 9.0 or higher
+- ob-python 0.1 or higher
+- Python 3.6 or higher (required for text processing)
 
-## 许可证
+## License
 
 GNU General Public License v3.0 

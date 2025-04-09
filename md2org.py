@@ -3,15 +3,20 @@ import sys
 import argparse
 import logging
 
-# 配置日志
+# Check Python version
+if sys.version_info < (3, 6):
+    print("Error: Python 3.6 or higher is required")
+    sys.exit(1)
+
+# Configure logging
 logging.basicConfig(level=logging.DEBUG,
                    format='%(asctime)s - %(levelname)s - %(message)s')
 
 def convert_headings(text, start_head :str = "*"):
     """
-    将Markdown标题转换为Org模式标题
-    # 标题 -> * 标题
-    ## 标题 -> ** 标题
+    Convert Markdown headings to Org mode headings
+    # Heading -> * Heading
+    ## Heading -> ** Heading
     """
     head_offset = len(start_head) - 1
     for i in range(6, 0, -1):
@@ -23,40 +28,40 @@ def convert_headings(text, start_head :str = "*"):
 
 def convert_bold(text):
     """
-    将Markdown加粗语法转换为Org模式加粗语法
-    **文本** 或 __文本__ -> *文本*
-    不匹配四个连续的*
-    先匹配整个加粗部分，然后根据前后是否有空白字符来决定是否添加空格
+    Convert Markdown bold syntax to Org mode bold syntax
+    **text** or __text__ -> *text*
+    Do not match four consecutive *
+    First match the entire bold section, then decide whether to add spaces based on whether there are whitespace characters before and after
     """
     def add_space_if_needed(match):
-        # 获取匹配的整个文本
+        # Get the entire matched text
         full_text = match.group(0)
-        # 获取加粗文本前后的字符
+        # Get characters before and after the bold text
         before = match.group(1)
         after = match.group(3)
 
-        # 如果前面不是空白字符，添加空格
+        # Add space if there is no whitespace before
         if not before.isspace():
             before = ' '
-        # 如果后面不是空白字符，添加空格
+        # Add space if there is no whitespace after
         if not after.isspace():
             after = ' '
             
         result = f"{before}*{match.group(2)}*{after}"
         return result
 
-    # 处理 **文本** 的情况
+    # Handle **text** case
     text = re.sub(r'(\s*)(?<!\*)\*\*(?!\*)(.*?)(?<!\*)\*\*(?!\*)(\s*)', add_space_if_needed, text)
-    # 处理 __文本__ 的情况
+    # Handle __text__ case
     text = re.sub(r'(\s*)__(.*?)__(\s*)', add_space_if_needed, text)
     return text
 
 def convert_italic(text):
     """
-    将Markdown斜体语法转换为Org模式斜体语法
-    *文本* 或 _文本_ -> /文本/
+    Convert Markdown italic syntax to Org mode italic syntax
+    *text* or _text_ -> /text/
     """
-    # 需要注意不要匹配到已经转换的加粗文本
+    # Need to be careful not to match already converted bold text
     text = re.sub(r'(?<!\*)\*(?!\*)(.*?)(?<!\*)\*(?!\*)', r'/\1/', text)
     text = re.sub(r'(?<!_)_(?!_)(.*?)(?<!_)_(?!_)', r'/\1/', text)
     return text
@@ -80,8 +85,8 @@ def convert_code(text):
 
 def convert_links(text):
     """
-    将Markdown链接语法转换为Org模式链接语法
-    [文本](链接) -> [[链接][文本]]
+    Convert Markdown link syntax to Org mode link syntax
+    [text](link) -> [[link][text]]
     """
     text = re.sub(r'\[(.*?)\]\((.*?)\)', r'[[\2][\1]]', text)
     return text
@@ -89,8 +94,8 @@ def convert_links(text):
 
 def convert_images(text):
     """
-    将Markdown图片语法转换为Org模式图片语法
-    ![替代文本](图片链接) -> [[图片链接][替代文本]]
+    Convert Markdown image syntax to Org mode image syntax
+    ![alt text](image link) -> [[image link][alt text]]
     """
     text = re.sub(r'!\[(.*?)\]\((.*?)\)', r'[[\2][\1]]', text)
     return text
@@ -98,19 +103,19 @@ def convert_images(text):
 
 def convert_lists(text):
     """
-    将Markdown列表语法转换为Org模式列表语法
-    - 项目 -> - 项目
-    1. 项目 -> 1. 项目
+    Convert Markdown list syntax to Org mode list syntax
+    - item -> - item
+    1. item -> 1. item
     """
-    # 无序列表已经兼容，不需要修改
-    # 有序列表也兼容，不需要修改
+    # Unordered lists are already compatible, no need to modify
+    # Ordered lists are also compatible, no need to modify
     return text
 
 
 def convert_horizontal_rule(text):
     """
-    将Markdown水平线转换为Org模式水平线
-    --- 或 *** 或 ___ -> -----
+    Convert Markdown horizontal rule to Org mode horizontal rule
+    --- or *** or ___ -> -----
     """
     text = re.sub(r'^(\*\*\*|---|___)$', r'-----', text, flags=re.MULTILINE)
     return text
@@ -118,10 +123,10 @@ def convert_horizontal_rule(text):
 
 def convert_blockquotes(text):
     """
-    将Markdown引用转换为Org模式引用
-    > 文本 -> #+BEGIN_QUOTE\n文本\n#+END_QUOTE
+    Convert Markdown blockquotes to Org mode blockquotes
+    > text -> #+BEGIN_QUOTE\ntext\n#+END_QUOTE
     """
-    # 识别连续的引用块
+    # Identify consecutive quote blocks
     in_quote = False
     lines = text.split('\n')
     result = []
@@ -142,7 +147,7 @@ def convert_blockquotes(text):
                 result.append("#+END_QUOTE")
             result.append(line)
 
-    # 处理文件末尾的引用块
+    # Handle quote blocks at the end of the file
     if in_quote:
         result.append("#+BEGIN_QUOTE")
         result.extend(quote_lines)
@@ -153,8 +158,8 @@ def convert_blockquotes(text):
 
 def convert_tables(text):
     """
-    尝试转换Markdown表格为Org模式表格
-    不完美，但适用于简单表格
+    Attempt to convert Markdown tables to Org mode tables
+    Not perfect, but works for simple tables
     """
     lines = text.split('\n')
     in_table = False
@@ -169,17 +174,17 @@ def convert_tables(text):
         else:
             if in_table:
                 in_table = False
-                # 移除分隔行 |---|---|
+                # Remove separator line |---|---|
                 table_lines = [
                     l for l in table_lines
                     if not re.match(r'^\|\s*[-:]+\s*\|', l)
                 ]
-                # 替换每行开头的 | 为空格
+                # Replace | at the beginning of each line with space
                 table_lines = [l.replace('|', ' |', 1) for l in table_lines]
                 result.extend(table_lines)
             result.append(line)
 
-    # 处理文件末尾的表格
+    # Handle tables at the end of the file
     if in_table:
         table_lines = [
             l for l in table_lines if not re.match(r'^\|\s*[-:]+\s*\|', l)
@@ -192,9 +197,9 @@ def convert_tables(text):
 
 def convert_checkboxes(text):
     """
-    将Markdown复选框转换为Org模式复选框
-    - [ ] 任务 -> - [ ] 任务
-    - [x] 任务 -> - [X] 任务
+    Convert Markdown checkboxes to Org mode checkboxes
+    - [ ] task -> - [ ] task
+    - [x] task -> - [X] task
     """
     text = re.sub(r'- \[ \]', r'- [ ]', text)
     text = re.sub(r'- \[x\]', r'- [X]', text, flags=re.IGNORECASE)
@@ -205,7 +210,7 @@ def convert_markdown_to_org(markdown_text: str,
                             indent: str = "",
                             start_head="*"):
     """
-    将Markdown文本转换为Org模式文本
+    Convert Markdown text to Org mode text
     """
     text = markdown_text
 
@@ -213,7 +218,7 @@ def convert_markdown_to_org(markdown_text: str,
         text_list = text.splitlines()
         text = "\n".join([line[len(indent):] for line in text_list])
 
-    # 转换各种语法
+    # Convert various syntax
     text = convert_headings(text, start_head)
     text = convert_blockquotes(text)
     text = convert_code(text)

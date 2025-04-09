@@ -7,4 +7,4 @@
     (org "9.0")
     (ob-python "0.1"))
   :keywords '("markdown" "org" "conversion")
-  :url "https://github.com/yourusername/markdown-to-org") 
+  :url "https://github.com/pistonly/markdown-to-org.git") 
