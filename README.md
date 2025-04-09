@@ -14,12 +14,40 @@ M-x package-install RET markdown-to-org RET
 
 ### Manual Installation
 
-1. Clone this repository
-2. Add the files to your `load-path`
-3. Add the following to your init.el:
-```elisp
-(require 'markdown-to-org)
-```
+1. Clone this repository:
+   ```bash
+   git clone https://github.com/pistonly/markdown-to-org.git
+   ```
+
+2. Add the files to your `load-path`:
+   - Open your Emacs configuration file (usually `~/.emacs.d/init.el` or `~/.emacs`)
+   - Add the following line, replacing the path with your actual repository path:
+   ```elisp
+   (add-to-list 'load-path "path/to/markdown-to-org")
+   ```
+
+3. Load the package in your Emacs configuration:
+   ```elisp
+   (require 'markdown-to-org)
+   ```
+
+4. Ensure Python dependencies:
+   - Make sure Python 3.6 or higher is installed on your system
+   - The package uses `markdown-to-org.py` for text processing
+
+5. Verify the installation:
+   - Restart Emacs
+   - Run `M-x markdown-to-org-convert-region` or `M-x markdown-to-org-convert-buffer` to verify the commands are available
+
+Note: Make sure you have:
+- Emacs 24.1 or higher
+- Org-mode 9.0 or higher
+- ob-python 0.1 or higher
+
+If you encounter any issues:
+- Check if `load-path` is correctly set
+- Verify all required files are in the correct location
+- Check the `*Messages*` buffer (`C-h e`) for any error messages
 
 ## Usage
 

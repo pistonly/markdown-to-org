@@ -17,7 +17,7 @@
 
 
 (defvar python-process-presets
-  `(("md2org" . ,(read-python-script "md2org.py"))
+  `(("md2org" . ,(read-python-script "markdown-to-org.py"))
     ("To Uppercase" . "text = text.upper()")
     ("To Lowercase" . "text = text.lower()")
     ("Word Count" . "text = f'Word count: {len(text.split())}'")
@@ -53,3 +53,19 @@
       (erase-buffer)
       (insert result)
       (pop-to-buffer (current-buffer)))))
+      
+;;;###autoload
+(defun markdown-to-org-convert-region (beg end)
+  "将选中区域的 Markdown 文本转换为 Org 格式。"
+  (interactive "r")
+  (process-region-with-python-preset beg end))
+
+;;;###autoload
+(defun markdown-to-org-convert-buffer ()
+  "将当前缓冲区的 Markdown 文本转换为 Org 格式。"
+  (interactive)
+  (markdown-to-org-convert-region (point-min) (point-max)))
+
+(provide 'markdown-to-org)
+
+;;; markdown-to-org.el ends here
