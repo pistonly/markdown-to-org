@@ -50,7 +50,7 @@
                       (format "text = '''%s'''\n%s\nprint(text)"
                               (replace-regexp-in-string "'" "\\\\'" region-text)
                               python-code))))
-    (message "%s" full-code)
+    ;; (message "%s" full-code)
     (let ((result (org-babel-eval "python3" full-code)))
       (with-current-buffer (get-buffer-create "*python-output*")
         (org-mode)
