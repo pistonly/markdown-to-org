@@ -43,14 +43,13 @@
          (python-code (cdr (assoc selected python-process-presets)))
          (full-code (if (string-equal selected "md2org")
                         (let ((indent-start-head (get-md2org-parameters)))
-                          (format "text, indent, start_head = '''%s''', '''%s''', '''%s'''\n%s"
+                          (format "text, indent, start_head = r'''%s''', '''%s''', '''%s'''\n%s"
                                   (replace-regexp-in-string "'" "\\\\'" region-text)
                                   (nth 0 indent-start-head)
                                   (nth 1 indent-start-head) python-code))
                       (format "text = '''%s'''\n%s\nprint(text)"
                               (replace-regexp-in-string "'" "\\\\'" region-text)
                               python-code))))
-    (message "%s\n--------------\n" python-code)
     (message "%s" full-code)
     (let ((result (org-babel-eval "python3" full-code)))
       (with-current-buffer (get-buffer-create "*python-output*")
