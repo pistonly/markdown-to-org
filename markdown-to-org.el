@@ -8,20 +8,20 @@
       (error "Python 3 is required but not found. Please install Python 3.6 or higher."))))
 
 (defun read-python-script (python-file-name)
-  "Read the python_scripts.py file from the current function's directory."
-  (let* ((current-dir (file-name-directory load-file-name))
+  "Read the python script file from the directory where this function is defined."
+  (let* ((current-dir (file-name-directory (or load-file-name
+                                               (bound-and-true-p byte-compile-current-file)
+                                               buffer-file-name)))
          (python-file (expand-file-name python-file-name current-dir)))
     (with-temp-buffer
       (insert-file-contents python-file)
       (buffer-string))))
 
 
-
-(setq markdown-to-org-code (format "%s\n%s" (read-python-script "convert_func.py") (read-python-script "markdown-to-org.py")))
-
-
 (defvar python-process-presets
-  `(("md2org" . ,markdown-to-org-code)
+  `(("md2org" . ,(format "%s\n%s"
+                         (read-python-script "convert_func.py")
+                         (read-python-script "markdown-to-org.py")))
     ("To Uppercase" . "text = text.upper()")
     ("To Lowercase" . "text = text.lower()")
     ("Word Count" . "text = f'Word count: {len(text.split())}'")

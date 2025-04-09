@@ -59,12 +59,14 @@ def convert_italic(text):
     """
     Convert Markdown italic syntax to Org mode italic syntax
     *text* or _text_ -> /text/
+    Exclude underscores in paths (e.g., /path/to/file_name)
     """
-    # Need to be careful not to match already converted bold text
-    text = re.sub(r'(?<!\*)\*(?!\*)(.*?)(?<!\*)\*(?!\*)', r'/\1/', text)
-    text = re.sub(r'(?<!_)_(?!_)(.*?)(?<!_)_(?!_)', r'/\1/', text)
+    # Convert *italic* (but not ​**​bold​**​)
+    text = re.sub(r'(?<!\*)\*(?!\*)([^\s*][^*]*[^\s*])(?<!\*)\*(?!\*)', r'/\1/', text)
+    
+    # # Convert _italic_ but exclude paths (no / or \ around)
+    # text = re.sub(r'(?<![\\/\\w])_(?!_)([^_]+)(?<!_)_(?![\\/\\w])', r'/\1/', text)
     return text
-
 
 def convert_code(text):
     """
