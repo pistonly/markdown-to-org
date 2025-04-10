@@ -4,7 +4,7 @@
 
 * markdown-to-org
 
-This is an Emacs package for converting Markdown text to Org-mode format.
+This is an Emacs package for converting Markdown text to Org-mode format, with additional text processing features.
 
 * Installation
 
@@ -37,7 +37,8 @@ M-x package-install RET markdown-to-org RET
 
 4. Ensure Python dependencies:
    - Make sure Python 3.6 or higher is installed on your system
-   - The package uses =markdown-to-org.py= for text processing
+   - The package uses =markdown-to-org.py= and =convert_func.py= for text processing
+   - Conda environment is supported (if available)
 
 5. Verify the installation:
    - Restart Emacs
@@ -52,14 +53,20 @@ If you encounter any issues:
 - Check if =load-path= is correctly set
 - Verify all required files are in the correct location
 - Check the =*Messages*= buffer (=C-h e=) for any error messages
+- Ensure Python path is correctly configured (can be set via =M-x customize= or =.dir-locals.el=)
 
 * Usage
 
 1. Open a buffer containing Markdown text in Emacs
 2. Select the text region you want to convert
 3. Run =M-x process-region-with-python-preset=
-4. Select "md2org" from the menu
-5. Follow the prompts to enter the indent level and starting heading level
+4. Select a processing method from the menu:
+   - md2org: Convert Markdown to Org format
+   - To Uppercase: Convert to uppercase
+   - To Lowercase: Convert to lowercase
+   - Word Count: Count words
+   - Line Count: Count lines
+5. If you select md2org, follow the prompts to enter the indent level and starting heading level
 6. The converted text will be displayed in a new buffer
 
 * Features
@@ -67,14 +74,21 @@ If you encounter any issues:
 - Convert Markdown to Org-mode format
 - Support custom indent levels
 - Support custom starting heading levels
-- Provide additional text processing features (such as case conversion, word count, etc.)
+- Additional text processing features:
+  - Case conversion
+  - Word count
+  - Line count
+- Flexible Python path configuration:
+  - Support Python in system PATH
+  - Support conda environment
+  - Customizable via customize or .dir-locals.el
 
 * Dependencies
 
 - Emacs 24.1 or higher
 - Org-mode 9.0 or higher
 - ob-python 0.1 or higher
-- Python 3.6 or higher (required for text processing)
+- Python 3.6 or higher (for text processing)
 
 * License
 
