@@ -1,5 +1,24 @@
 (require 'ob-python)
 
+;; 1. First try to find Python in PATH
+;; 2. Fall back to conda environment if available
+;; 3. Allow customization via M-x customize or .dir-locals.el
+;; 4. Default to "python3" if nothing else is found
+(defcustom python-path (or (executable-find "python3")
+                           (executable-find "python")
+                           "python3")
+  "Path to Python executable. Can be set via customize or .dir-locals.el."
+  :type 'string
+  :group 'markdown-to-org)
+
+;; Optionally add conda support
+(defun get-conda-python ()
+  (when (getenv "CONDA_PREFIX")
+    (expand-file-name "bin/python" (getenv "CONDA_PREFIX"))))
+
+(setq python-path (or (get-conda-python) python-path))
+
+
 (defun check-python-version ()
   "Check if Python 3 is available."
   (let ((python-version (shell-command-to-string "python3 --version 2>&1")))
@@ -51,7 +70,7 @@
                               (replace-regexp-in-string "'" "\\\\'" region-text)
                               python-code))))
     ;; (message "%s" full-code)
-    (let ((result (org-babel-eval "python3" full-code)))
+    (let ((result (org-babel-eval python-path full-code)))
       (with-current-buffer (get-buffer-create "*python-output*")
         (org-mode)
         (erase-buffer)
